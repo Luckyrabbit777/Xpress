@@ -6,6 +6,8 @@ import com.anshuman.entity.User;
 import com.anshuman.storage.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -31,16 +33,28 @@ public class UserService {
     }
 
     public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).get();
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()){
+            throw new RuntimeException("User Doesn't Exist");
+        }
+        User user = optionalUser.get();
         UserResponse response = new UserResponse();
         response.setId(user.getId());
         response.setName(user.getName());
         return response;
     }
-    public UserResponse updateUser(UserRequest request){
-    	UserResponse response = new UserResponse();
-    	response.setName(request.getName());
-    	response.setAge(request.getAge());
+    public UserResponse updateUser(UserRequest request, Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()){
+            throw new RuntimeException("User Doesn't Exist");
+        }
+        optionalUser.get().setName(request.getName());
+        optionalUser.get().setAge(request.getAge());
+
+        User savedUser = userRepository.save(optionalUser.get());
+        UserResponse response = new UserResponse();
+        response.setId(savedUser.getId());
+        response.setName(savedUser.getName());
     	return response;
     }
 }
