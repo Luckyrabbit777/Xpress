@@ -45,16 +45,31 @@ public class UserService {
     }
     public UserResponse updateUser(UserRequest request, Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new RuntimeException("User Doesn't Exist");
         }
         optionalUser.get().setName(request.getName());
         optionalUser.get().setAge(request.getAge());
+        optionalUser.get().setPhoneNumber(request.getPhoneNumber());
+        optionalUser.get().setEmail(request.getEmail());
 
         User savedUser = userRepository.save(optionalUser.get());
         UserResponse response = new UserResponse();
         response.setId(savedUser.getId());
         response.setName(savedUser.getName());
-    	return response;
+        response.setEmail(savedUser.getEmail());
+        return response;
     }
+    public UserResponse deleteUser(Long id){
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()) {
+            throw new RuntimeException("User Doesn't Exist");
+        }
+        User user = optionalUser.get();
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        userRepository.deleteById(id);
+        return response;
+    }
+
 }
