@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/Welcome")
@@ -33,9 +30,12 @@ public class UserController {
         return userService.registerUser(request);
     }
 
-    @PutMapping("user/{id}")
+    @PutMapping("/user/{id}")
     public UserResponse updateUser(@PathVariable long id,@RequestBody UserRequest request){
         return userService.updateUser(request,id);
     }
+    @DeleteMapping("/user/{id}")
+        public UserResponse deleteUser(@PathVariable long id){
+        return userService.deleteUser(id);}
 
 }

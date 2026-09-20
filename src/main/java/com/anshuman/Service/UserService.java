@@ -27,6 +27,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
         response.setId(savedUser.getId());
         response.setName(user.getName());
+        response.setAge(user.getAge());
         response.setEmail(user.getEmail());
         response.setMessage("User Registered Successfully");
         return response;
@@ -41,6 +42,8 @@ public class UserService {
         UserResponse response = new UserResponse();
         response.setId(user.getId());
         response.setName(user.getName());
+        response.setAge(user.getAge());
+        response.setEmail(user.getEmail());
         return response;
     }
     public UserResponse updateUser(UserRequest request, Long id) {
