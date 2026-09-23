@@ -2,6 +2,7 @@ package com.anshuman.Service;
 
 import com.anshuman.DTO.Request.TrainRequest;
 import com.anshuman.DTO.Response.TrainResponse;
+import com.anshuman.Exception.TrainNotFoundException;
 import com.anshuman.entity.Train;
 import com.anshuman.storage.TrainRepository;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public class TrainService {
@@ -23,10 +26,10 @@ public class TrainService {
 
     * */
 
-    private Train findTrainById(Long id) {
+    private Train findTrainById(Long id) throws TrainNotFoundException{
         Optional<Train> optionalTrain = trainRepository.findById(id);
         if (optionalTrain.isEmpty()) {
-            throw new RuntimeException("Train Doesn't Exist");
+            throw new TrainNotFoundException("Train Not Found");
         }
         return optionalTrain.get();
     }
@@ -38,10 +41,10 @@ public class TrainService {
         train.setTrainNumber(request.getTrainNumber());
 
         Train savedTrain = trainRepository.save(train);
-        response.setId(train.getId());
-        response.setTrainName(train.getTrainName());
-        response.setTrainNumber(train.getTrainNumber());
-        response.setMessage("User Registered Successfully");
+        response.setId(savedTrain.getId());
+        response.setTrainName(savedTrain.getTrainName());
+        response.setTrainNumber(savedTrain.getTrainNumber());
+        response.setMessage("Train Registered Successfully");
         return response;
     }
 
